@@ -3,6 +3,7 @@ package com.example.pathfinder.service;
 import com.example.pathfinder.model.dto.UserRegisterDTO;
 import com.example.pathfinder.model.entity.User;
 import com.example.pathfinder.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,14 +12,16 @@ import java.util.Optional;
 public class AuthService {
 
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void register(UserRegisterDTO userRegisterDTO) {
         if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
-            throw new RuntimeException("passwords.match");
+            throw new RuntimeException("passwords do not match");
         }
 
         Optional<User> byEmail = this.userRepository.findByEmail(userRegisterDTO.getEmail());
@@ -29,7 +32,7 @@ public class AuthService {
 
         User user = new User(
                 userRegisterDTO.getUsername(),
-                userRegisterDTO.getPassword(),
+                passwordEncoder.encode(userRegisterDTO.getPassword()),
                 userRegisterDTO.getEmail(),
                 userRegisterDTO.getFullName(),
                 userRegisterDTO.getAge()
