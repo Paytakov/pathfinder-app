@@ -56,4 +56,9 @@ public class AuthController {
     public UserRegisterDTO initForm() {
         return new UserRegisterDTO();
     }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
 }
