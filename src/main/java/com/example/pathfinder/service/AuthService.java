@@ -3,6 +3,7 @@ package com.example.pathfinder.service;
 import com.example.pathfinder.model.dto.UserRegisterDTO;
 import com.example.pathfinder.model.entity.User;
 import com.example.pathfinder.repository.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +40,10 @@ public class AuthService {
         );
 
         this.userRepository.save(user);
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + " was not found!"));
     }
 }

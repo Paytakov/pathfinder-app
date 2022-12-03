@@ -1,8 +1,12 @@
 package com.example.pathfinder.web;
 
 import com.example.pathfinder.model.dto.UserRegisterDTO;
+import com.example.pathfinder.model.entity.User;
+import com.example.pathfinder.model.enums.UserLevelEnum;
+import com.example.pathfinder.model.view.UserProfileView;
 import com.example.pathfinder.service.AuthService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/users")
@@ -58,7 +63,17 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
-    public String profile() {
+    public String profile(Principal principal, Model model) {
+        String username = principal.getName();
+        User user = authService.getUserByUsername(username);
+        UserProfileView userProfileView = new UserProfileView(
+                username,
+                user.getEmail(),
+                user.getFullName(),
+                user.getAge(),
+                user.getLevel() != null ? user.getLevel().name() : UserLevelEnum.BEGINNER.name());
+
+        model.addAttribute("user", userProfileView);
         return "profile";
     }
 }
