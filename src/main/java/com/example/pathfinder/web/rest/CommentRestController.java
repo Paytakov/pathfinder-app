@@ -7,13 +7,14 @@ import com.example.pathfinder.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +24,11 @@ public class CommentRestController {
 
     public CommentRestController(CommentService commentService) {
         this.commentService = commentService;
+    }
+
+    @GetMapping("/{routeId}/comments")
+    public ResponseEntity<List<CommentDisplayView>> getComments(@PathVariable("routeId") Long id) {
+        return ResponseEntity.ok(commentService.getAllCommentsForRoute(id));
     }
 
     @PostMapping("/{routeId}/comments")

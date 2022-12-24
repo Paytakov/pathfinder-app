@@ -20,7 +20,7 @@ public class AppSecurityConfiguration {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .antMatchers("/", "/routes/**").permitAll()
                 .antMatchers( "/users/login", "/users/register").anonymous()
-                .antMatchers("/users/profile").authenticated()
+                .antMatchers("/users/profile", "/api/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/users/login")
